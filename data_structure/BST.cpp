@@ -24,22 +24,33 @@ class BST {
       return root;
     }
 
-    // Contain memory leak issue, need refactor later
     TreeNode* deleteNode(TreeNode* root, int key) {
       if (!root)
         return nullptr;
 
-      if (root->val == key) {
-        if (!root->right)
+      if (root->val < key)
+        root->right = deleteNode(root->right, key);
+
+      else if (root->val > key)
+        root->left = deleteNode(root->left, key);
+
+      else {
+        if (!root->left && !root->right)
+          return nullptr;
+        else if (!root->right)
+          return root->left;
+        else if (!root->right)
           return root->left;
         else {
-          TreeNode* cur = root->right;
-          while (cur->left) cur = cur->left;
-          std::swap(root->val, cur->val);
+          TreeNode *tmp = root->left;
+          while(tmp->right)
+            tmp = tmp->right;
+          
+          root->val = tmp->val;
+          root->left = deleteNode(root->left, tmp->val);
+          delete tmp;
         }
       }
-      root->left = deleteNode(root->left, key);
-      root->right = deleteNode(root->right, key);
       return root;
     }
 
