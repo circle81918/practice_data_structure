@@ -28,19 +28,21 @@ class BST {
       if (!root)
         return nullptr;
 
-      if (root->val < key)
-        root->right = deleteNode(root->right, key);
-
-      else if (root->val > key)
-        root->left = deleteNode(root->left, key);
-
-      else {
-        if (!root->left && !root->right)
+      if (root->val == key) {
+        if (!root->left && !root->right) {
+          delete root;
           return nullptr;
-        else if (!root->right)
-          return root->left;
-        else if (!root->right)
-          return root->left;
+        }
+        else if (root->right) {
+          TreeNode *tmp = root->right;
+          delete root;
+          return tmp;
+        }
+        else if (root->left) {
+          TreeNode *tmp = root->left;
+          delete root;
+          return tmp;
+        }
         else {
           TreeNode *tmp = root->left;
           while(tmp->right)
@@ -48,9 +50,14 @@ class BST {
           
           root->val = tmp->val;
           root->left = deleteNode(root->left, tmp->val);
-          delete tmp;
+          delete root;
         }
       }
+      else if (root->val < key)
+        root->right = deleteNode(root->right, key);
+
+      else if (root->val > key)
+        root->left = deleteNode(root->left, key);
       return root;
     }
 
